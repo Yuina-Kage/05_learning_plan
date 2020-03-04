@@ -8,7 +8,6 @@ $id = $_GET['id'];
 $dbh = connectDb();
 
 $sql = "select * from plans where id = :id";
-
 $stmt = $dbh->prepare($sql);
 $stmt->bindParam(":id", $id);
 $stmt->execute();
@@ -32,12 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   if (empty($errors)) {
-    $sql = "update plans set title = :title, :due_date, updated_at = now() where id = :id";
 
+    $sql = "update plans set title = :title, updated_at = now() where id = :id";
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(":title", $title);
+    $stmt->bindParam(":id", $id);
+    
+    
+    $sql = "update plans set due_date =:due_date updated_at = now() where id = :id";
+    $stmt = $dbh->prepare($sql);
     $stmt->bindParam(":due_date", $due_date);
     $stmt->bindParam(":id", $id);
+
     $stmt->execute();
 
     header('Location: index.php');
@@ -61,21 +66,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <p>
 <form action="" method="post">
   <label for="title">学習内容:
-    <input type="title" name="title" value="<?php echo h($plan['title']); ?>">
+    <input type="text" name="title" value="<?php echo h($plan['title']); ?>">
   </label> 
   <label for="due_date">期限日: 
-    <input type="date" name="date" value="<?php echo h($plan['due_date']); ?>">
+    <input type="date" name="due_date" value="<?php echo h($plan['due_date']); ?>">
     <input type="submit" value="編集">
   </label>
-  <?php if ($errors) : ?>
-    <ul class="error-list">
-      <?php foreach ($errors as $error) : ?>
-        <li>
-          <?php echo h($error); ?>
-        </li>
-      <?php endforeach; ?> 
-    </ul>
-  <?php endif; ?>  
+    <?php if (count($_POST) > 0) : ?>
+      <ul class="error-list">
+        <?php foreach ($errors as $key => $value) : ?>
+          <li><?php echo h($value); ?></li>
+        <?php endforeach; ?>
+      </ul>
+    <?php endif; ?>
 </form>
 </p>
 </body>

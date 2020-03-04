@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if (empty($errors)) {
     $sql = "insert into plans (title, due_date, created_at, updated_at) values (:title, :due_date, now(), now())";
-    
+
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(":title",  $title,);
     $stmt->bindParam(":due_date", $due_date);
@@ -59,33 +59,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <h1>学習管理アプリ</h1>
   <form action="" method="post">
     <label for="title">学習内容:
-      <input type="title" name="title" value="<?php echo h($title); ?>">
+      <input type="text" name="title" value="<?php echo h($title); ?>">
     </label> 
     <br>
     <label for="due_date">期限日: 
-      <input type="date" name="date" value="<?php echo h($due_date); ?>">
+      <input type="date" name="due_date" value="<?php echo h($due_date); ?>">
       <input type="submit" value="追加">
     </label>
-      <?php if ($errors) : ?>
+      <?php if (count($_POST) > 0) : ?>
         <ul class="error-list">
-          <?php foreach ($errors as $error) : ?>
-            <li>
-              <?php echo h($error); ?>
-            </li>
-          <?php endforeach; ?> 
+          <?php foreach ($errors as $key => $value) : ?>
+            <li><?php echo h($value); ?></li>
+          <?php endforeach; ?>
         </ul>
-      <?php endif; ?>  
-  
-  
-
-      </form>
-    
-    
-      
-      
-
-  
-
+      <?php endif; ?>
+  </form>
   <h2>未達成</h2>
   <ul>
     <?php foreach ($notyet_plans as $plan) : ?>
@@ -98,6 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endforeach; ?>
   </ul>
   <hr>
+
+
+        
 
   <h2>達成済み</h2>
   <ul>
