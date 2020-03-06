@@ -5,9 +5,12 @@ require_once('functions.php');
 
 $id = $_GET['id'];
 
+$errors = array();
+
 $dbh = connectDb();
 
 $sql = "select * from plans where id = :id";
+
 $stmt = $dbh->prepare($sql);
 $stmt->bindParam(":id", $id);
 $stmt->execute();
@@ -22,35 +25,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $errors = [];
 
-  if ($title == '') {
+  if ($_POST['title'] === 'title') {
     $errors['title'] = 'タスク名が変更されていません';
   }
 
-  if ($due_date == '') {
+  if ($_POST['due_date'] === 'due_date') {
     $errors['due_date'] = '日付が変更されていません';
   }
 
   if (empty($errors)) {
 
-    $sql = "update plans set title = :title, updated_at = now() where id = :id";
+    $sql = "update plans set title = :title, due_date = :due_date, updated_at = now() where id = :id";
+  
     $stmt = $dbh->prepare($sql);
+    
     $stmt->bindParam(":title", $title);
-    $stmt->bindParam(":id", $id);
-    
-    
-    $sql = "update plans set due_date =:due_date updated_at = now() where id = :id";
-    $stmt = $dbh->prepare($sql);
     $stmt->bindParam(":due_date", $due_date);
     $stmt->bindParam(":id", $id);
-
+    
     $stmt->execute();
-
+  
     header('Location: index.php');
     exit;
   }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>編集画面</title>
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -72,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="date" name="due_date" value="<?php echo h($plan['due_date']); ?>">
     <input type="submit" value="編集">
   </label>
-    <?php if (count($_POST) > 0) : ?>
+    <?php if (count($errors) > 0) : ?>
       <ul class="error-list">
         <?php foreach ($errors as $key => $value) : ?>
           <li><?php echo h($value); ?></li>
