@@ -25,11 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $errors = [];
 
-  if ($_POST['title'] === 'title') {
+  if ($_POST['title'] === '') {
     $errors['title'] = 'タスク名が変更されていません';
   }
 
-  if ($_POST['due_date'] === 'due_date') {
+  if ($_POST['due_date'] === '') {
     $errors['due_date'] = '日付が変更されていません';
   }
 

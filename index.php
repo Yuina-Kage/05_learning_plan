@@ -7,16 +7,14 @@ $errors = array();
 
 $dbh = connectDb(); 
 
-$sql = "select * from  plans where  status = 'notyet'";
-$sql = "select * from plans order by updated_at desc";
+$sql = "select * from plans where status = 'notyet' order by due_date asc";
 
 $stmt = $dbh->prepare($sql);
 $stmt->execute();
 $notyet_plans = $stmt->fetchALL(PDO::FETCH_ASSOC);
 
 
-$sql2 = "select * from plans where status = 'done'";
-$sql2 = "select * from plans order by updated_at asc";
+$sql2 = "select * from plans where status = 'done' order by due_date desc";
 
 $stmt = $dbh->prepare($sql2);
 $stmt->execute();
