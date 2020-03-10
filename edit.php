@@ -25,16 +25,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $errors = [];
 
-  if ($_POST['title'] === '') {
+  if ($title == $plan['title']) {
     $errors['title'] = 'タスク名が変更されていません';
   }
 
-  if ($_POST['due_date'] === '') {
+  if ($due_date == $plan['due_date']) {
     $errors['due_date'] = '日付が変更されていません';
   }
 
-  if (empty($errors)) {
+  if ($title == '') {
+    $errors['title'] = 'タスク名を入力してください';
+  }
 
+  if ($due_date == '') {
+    $errors['due_date'] = '期限を入力してください';
+  }
+
+
+  if (empty($errors)) {
     $sql = "update plans set title = :title, due_date = :due_date, updated_at = now() where id = :id";
   
     $stmt = $dbh->prepare($sql);
@@ -57,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>編集画面</title>
-  <link href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
